@@ -11,7 +11,7 @@ namespace DJFLAP
 		private bool isSelected;
 		private string name;
 		private int id;
-		private Dictionary<int, char> transitions;
+		private Dictionary<int, int> transitions;
 		public State()
 		{
 			isSelected = false;

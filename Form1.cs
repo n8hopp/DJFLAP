@@ -54,5 +54,15 @@ namespace DJFLAP
 			pen.Width = 5;
 			g.DrawEllipse(pen, rect);
 		}
+
+		private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
+		{
+
+		}
+
+		private void loadDFAFromFileToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+		}
 	}
 }

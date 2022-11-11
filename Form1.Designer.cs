@@ -43,6 +43,7 @@ namespace DJFLAP
 			this.testDFAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -77,25 +78,26 @@ namespace DJFLAP
 			// createNewDFAToolStripMenuItem
 			// 
 			this.createNewDFAToolStripMenuItem.Name = "createNewDFAToolStripMenuItem";
-			this.createNewDFAToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.createNewDFAToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.createNewDFAToolStripMenuItem.Text = "Create New DFA";
 			// 
 			// saveAsToolStripMenuItem
 			// 
 			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.saveAsToolStripMenuItem.Text = "Save As";
 			// 
 			// loadDFAFromFileToolStripMenuItem
 			// 
 			this.loadDFAFromFileToolStripMenuItem.Name = "loadDFAFromFileToolStripMenuItem";
-			this.loadDFAFromFileToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.loadDFAFromFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.loadDFAFromFileToolStripMenuItem.Text = "Load DFA from file";
+			this.loadDFAFromFileToolStripMenuItem.Click += new System.EventHandler(this.loadDFAFromFileToolStripMenuItem_Click);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.exitToolStripMenuItem.Text = "Exit";
 			// 
 			// toolStripDropDownButton2
@@ -113,13 +115,13 @@ namespace DJFLAP
 			// testDFAInputToolStripMenuItem
 			// 
 			this.testDFAInputToolStripMenuItem.Name = "testDFAInputToolStripMenuItem";
-			this.testDFAInputToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+			this.testDFAInputToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.testDFAInputToolStripMenuItem.Text = "Test String (Input)";
 			// 
 			// testDFAToolStripMenuItem
 			// 
 			this.testDFAToolStripMenuItem.Name = "testDFAToolStripMenuItem";
-			this.testDFAToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+			this.testDFAToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.testDFAToolStripMenuItem.Text = "Test String (Textfile)";
 			this.testDFAToolStripMenuItem.Click += new System.EventHandler(this.testDFAToolStripMenuItem_Click);
 			// 
@@ -140,6 +142,11 @@ namespace DJFLAP
 			this.panel1.TabIndex = 2;
 			this.panel1.Click += new System.EventHandler(this.panel1_Click);
 			this.panel1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseClick);
+			// 
+			// openFileDialog1
+			// 
+			this.openFileDialog1.FileName = "openFileDialog1";
+			this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
 			// 
 			// Form1
 			// 
@@ -170,6 +177,7 @@ namespace DJFLAP
 		private System.Windows.Forms.ToolStripMenuItem testDFAToolStripMenuItem;
 		private System.Windows.Forms.ToolStripButton toolStripButton5;
 		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.OpenFileDialog openFileDialog1;
 	}
 }
 
