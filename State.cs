@@ -18,5 +18,28 @@ namespace DJFLAP
 			name = "";
 			id = -1;
 		}
+
+		public State(int id)
+		{
+			this.id = id;
+			isSelected = false;
+			name = "";
+		}
+
+		public int getId()
+		{
+			return this.id;
+		}
+
+		public string getName()
+		{
+			return this.name;
+		}
+
+		public bool toggleSelect()
+		{
+			isSelected = !isSelected;
+			return isSelected;
+		}
 	}
 }

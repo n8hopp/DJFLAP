@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace DJFLAP
 {
 	partial class Form1
@@ -40,6 +42,7 @@ namespace DJFLAP
 			this.testDFAInputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.testDFAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
+			this.panel1 = new System.Windows.Forms.Panel();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -74,25 +77,25 @@ namespace DJFLAP
 			// createNewDFAToolStripMenuItem
 			// 
 			this.createNewDFAToolStripMenuItem.Name = "createNewDFAToolStripMenuItem";
-			this.createNewDFAToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.createNewDFAToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.createNewDFAToolStripMenuItem.Text = "Create New DFA";
 			// 
 			// saveAsToolStripMenuItem
 			// 
 			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.saveAsToolStripMenuItem.Text = "Save As";
 			// 
 			// loadDFAFromFileToolStripMenuItem
 			// 
 			this.loadDFAFromFileToolStripMenuItem.Name = "loadDFAFromFileToolStripMenuItem";
-			this.loadDFAFromFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.loadDFAFromFileToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.loadDFAFromFileToolStripMenuItem.Text = "Load DFA from file";
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.exitToolStripMenuItem.Text = "Exit";
 			// 
 			// toolStripDropDownButton2
@@ -129,11 +132,21 @@ namespace DJFLAP
 			this.toolStripButton5.Size = new System.Drawing.Size(36, 22);
 			this.toolStripButton5.Text = "Help";
 			// 
+			// panel1
+			// 
+			this.panel1.Location = new System.Drawing.Point(0, 28);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(800, 422);
+			this.panel1.TabIndex = 2;
+			this.panel1.Click += new System.EventHandler(this.panel1_Click);
+			this.panel1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseClick);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(800, 450);
+			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.toolStrip1);
 			this.Name = "Form1";
 			this.Text = "Form1";
@@ -156,6 +169,7 @@ namespace DJFLAP
 		private System.Windows.Forms.ToolStripMenuItem testDFAInputToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem testDFAToolStripMenuItem;
 		private System.Windows.Forms.ToolStripButton toolStripButton5;
+		private System.Windows.Forms.Panel panel1;
 	}
 }
 
