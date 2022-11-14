@@ -7,6 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+using System.Xml;
+
+
 
 namespace DJFLAP
 {
@@ -16,6 +20,10 @@ namespace DJFLAP
 		int x = -1;
 		int y = -1;
 		Pen pen;
+
+		String fileName;
+
+		
 
 		public Form1()
 		{
@@ -57,8 +65,19 @@ namespace DJFLAP
 
         private void loadDFAFromFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
+			using (OpenFileDialog upload = new OpenFileDialog())
+			{
+				upload.Title = "Select File";
+				if (upload.ShowDialog() != DialogResult.OK)
+					return;
+				string filePath = upload.FileName;
+				this.fileName = Path.GetFileName(filePath);
+			}
 
-        }
+			XmlDocument doc = new XmlDocument();
+			doc.Load(fileName);
+
+		}
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
