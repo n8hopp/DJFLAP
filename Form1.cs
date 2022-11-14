@@ -55,14 +55,14 @@ namespace DJFLAP
 			g.DrawEllipse(pen, rect);
 		}
 
-		private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
-		{
+        private void loadDFAFromFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
 
-		}
+        }
 
-		private void loadDFAFromFileToolStripMenuItem_Click(object sender, EventArgs e)
-		{
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
 
-		}
-	}
+        }
+    }
 }
