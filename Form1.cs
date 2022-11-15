@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Xml;
-
-
+using System.Xml.Linq;
 
 namespace DJFLAP
 {
@@ -65,20 +64,61 @@ namespace DJFLAP
 
         private void loadDFAFromFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-			using (OpenFileDialog upload = new OpenFileDialog())
+			OpenFileDialog upload = new OpenFileDialog();
+			
+			upload.Title = "Select File";
+			upload.Filter = "All files(*.*) | *.*";
+			string filePath = upload.FileName;
+			this.fileName = Path.GetFileName(filePath);
+
+			if (upload.ShowDialog() == DialogResult.OK)
 			{
-				upload.Title = "Select File";
-				if (upload.ShowDialog() != DialogResult.OK)
-					return;
-				string filePath = upload.FileName;
-				this.fileName = Path.GetFileName(filePath);
-			}
+				FiniteAutomaton fa = new FiniteAutomaton();
 
-			XmlDocument doc = new XmlDocument();
-			doc.Load(fileName);
+				XElement root = XElement.Load(upload.FileName);
+				IEnumerable<XElement> states = root.Elements().Where(x => x.Name == "state");
 
+				foreach (XmlNode node in nodes)
+				{
+					int stateId = Int32.Parse(node.Attributes["id"].Value);
+					string stateName = node.Attributes["name"].Value;
+					int stateX = Int32.Parse(node.SelectSingleNode("X").InnerText);
+					int stateY = Int32.Parse(node.SelectSingleNode("Y").InnerText);
+					State state = new State(stateId, stateName, stateX, stateY);
+					fa.states.Add(state);
+				}
+
+				XmlNodeList transitions = doc.DocumentElement.SelectNodes("structure/automaton/transition");
+
+				foreach (XmlNode node in nodes)
+				{
+					int from = Int32.Parse(node.Attributes["from"].Value);
+					int to = Int32.Parse(node.Attributes["to"].Value);
+					fa.transitions.Add(from, to);
+				}
+
+				drawStates(fa);
+				
+				}
 		}
 
+		private void drawStates(FiniteAutomaton fa)
+		{
+			foreach(State state in fa.states)
+			{
+				Rectangle rect = new Rectangle();
+				rect.X = state.getX();
+				rect.Y = state.getY();
+				rect.Width = 50;
+				rect.Height = 50;
+				pen.Width = 50;
+				g.DrawEllipse(pen, rect);
+			}
+			for(int i = 0; i < fa.transitions.Count; i++)
+			{
+
+			}
+		}
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
