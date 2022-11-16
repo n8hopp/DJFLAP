@@ -117,6 +117,8 @@ namespace DJFLAP
 
 		private void drawStates(FiniteAutomaton fa)
 		{
+			g.Clear(Color.White);
+			pen.Color = Color.Black;
 			foreach(State state in fa.states)
 			{
 				Rectangle rect = new Rectangle();
@@ -164,6 +166,7 @@ namespace DJFLAP
 				int toX = to.getX() + 12;
 				int toY = to.getY() + 12;
 				g.DrawLine(pen, new Point(fromX, fromY), new Point(toX, toY));
+				g.DrawString(t.getRead(), Font, Brushes.Black, new Point((fromX + toX) / 2, (fromY + toY) / 2));
 			}
 		}
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -178,8 +181,11 @@ namespace DJFLAP
 			string promptValue = Prompt.ShowDialog("Please input a string you wish to parse.", "String Input");
 			string shrunk = String.Concat(promptValue.Where(c => !Char.IsWhiteSpace(c)));
 
-			int currentState = fa.states.FirstOrDefault(x => x.getInitial() == true).getId();
+			State firstState = fa.states.FirstOrDefault(x => x.getInitial() == true);
+			if (firstState == null) return;
 
+			int currentState = firstState.getId();
+			
 			foreach(char c in shrunk)
 			{
 				IEnumerable<Transition> paths = fa.transitions.Where(x => x.getFrom() == currentState);
