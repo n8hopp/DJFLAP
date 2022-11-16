@@ -9,12 +9,16 @@ namespace DJFLAP
 	class State
 	{
 		private bool isSelected;
+		private bool isFinal;
+		private bool isInitial;
 		private string name;
 		private int id;
 		private int x, y;
 		public State()
 		{
 			isSelected = false;
+			isFinal = false;
+			isInitial = false;
 			name = "";
 			id = -1;
 			x = y = 0;
@@ -24,15 +28,19 @@ namespace DJFLAP
 		{
 			this.id = id;
 			isSelected = false;
+			isFinal = false;
+			isInitial = false;
 			name = "";
 		}
 
-		public State(int id, string name, int x, int y)
+		public State(int id, string name, int x, int y, bool final, bool initial)
 		{
 			this.name = name;
 			this.id = id;
 			this.x = x;
 			this.y = y;
+			this.isInitial = initial;
+			this.isFinal = final;
 			isSelected = false;
 		}
 
@@ -51,6 +59,15 @@ namespace DJFLAP
 			return this.y;
 		}
 
+		public bool getFinal()
+		{
+			return this.isFinal;
+		}
+
+		public bool getInitial()
+		{
+			return this.isInitial;
+		}
 		public string getName()
 		{
 			return this.name;

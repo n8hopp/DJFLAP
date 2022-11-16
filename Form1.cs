@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Xml;
 using System.Xml.Linq;
+using System.Drawing.Drawing2D;
 
 namespace DJFLAP
 {
@@ -19,7 +20,7 @@ namespace DJFLAP
 		int x = -1;
 		int y = -1;
 		Pen pen;
-
+		FiniteAutomaton fa;
 		String fileName;
 
 		
@@ -73,33 +74,45 @@ namespace DJFLAP
 
 			if (upload.ShowDialog() == DialogResult.OK)
 			{
-				FiniteAutomaton fa = new FiniteAutomaton();
+				fa = new FiniteAutomaton();
 
 				XElement root = XElement.Load(upload.FileName);
-				IEnumerable<XElement> states = root.Elements().Where(x => x.Name == "state");
+				IEnumerable<XElement> states = root.Descendants().Where(x => x.Name == "state");
 
-				foreach (XmlNode node in nodes)
+				foreach(var i in states)
 				{
-					int stateId = Int32.Parse(node.Attributes["id"].Value);
-					string stateName = node.Attributes["name"].Value;
-					int stateX = Int32.Parse(node.SelectSingleNode("X").InnerText);
-					int stateY = Int32.Parse(node.SelectSingleNode("Y").InnerText);
-					State state = new State(stateId, stateName, stateX, stateY);
+					int stateId = Int32.Parse(i.Attributes().FirstOrDefault(x => x.Name == "id").Value);
+
+					string stateName = i.Attributes().FirstOrDefault(x => x.Name == "name").Value;
+
+					int stateX = Convert.ToInt32(float.Parse(i.Descendants().FirstOrDefault(x => x.Name == "x").Value));
+					int stateY = Convert.ToInt32(float.Parse(i.Descendants().FirstOrDefault(x => x.Name == "y").Value));
+
+					XElement finalEl = i.Descendants().FirstOrDefault(x => x.Name == "final");
+					XElement initialEl = i.Descendants().FirstOrDefault(x => x.Name == "initial");
+					bool final = false;
+					bool initial = false;
+
+					if (finalEl != null) final = true;
+					if (initialEl != null) initial = true;
+
+					State state = new State(stateId, stateName, stateX, stateY, final, initial);
 					fa.states.Add(state);
 				}
 
-				XmlNodeList transitions = doc.DocumentElement.SelectNodes("structure/automaton/transition");
+				IEnumerable<XElement> transitions = root.Descendants().Where(x => x.Name == "transition");
 
-				foreach (XmlNode node in nodes)
+				foreach(var i in transitions)
 				{
-					int from = Int32.Parse(node.Attributes["from"].Value);
-					int to = Int32.Parse(node.Attributes["to"].Value);
-					fa.transitions.Add(from, to);
+					int from = Int32.Parse(i.Descendants().FirstOrDefault(x => x.Name == "from").Value);
+					int to = Int32.Parse(i.Descendants().FirstOrDefault(x => x.Name == "to").Value);
+					string read = i.Descendants().FirstOrDefault(x => x.Name == "read").Value;
+					Transition transition = new Transition(from, to, read);
+					fa.transitions.Add(transition);
 				}
-
 				drawStates(fa);
 				
-				}
+			}
 		}
 
 		private void drawStates(FiniteAutomaton fa)
@@ -107,21 +120,89 @@ namespace DJFLAP
 			foreach(State state in fa.states)
 			{
 				Rectangle rect = new Rectangle();
-				rect.X = state.getX();
-				rect.Y = state.getY();
-				rect.Width = 50;
-				rect.Height = 50;
-				pen.Width = 50;
-				g.DrawEllipse(pen, rect);
-			}
-			for(int i = 0; i < fa.transitions.Count; i++)
-			{
+				int x = state.getX();
+				int y = state.getY();
+				rect.X = x;
+				rect.Y = y;
+				rect.Width = 25;
+				rect.Height = 25;
+				pen.Width = 25;
+				pen.Alignment = System.Drawing.Drawing2D.PenAlignment.Center;
+				Brush whiteText = new SolidBrush(Color.White);
+				StringFormat stringFormat = new StringFormat();
+				stringFormat.Alignment = StringAlignment.Center;
+				stringFormat.LineAlignment = StringAlignment.Center;
 
+				g.DrawEllipse(pen, rect);
+				g.DrawString(state.getName(), Font, whiteText, rect, stringFormat);
+
+				if(state.getFinal() == true)
+				{
+					Rectangle biggerRect = new Rectangle();
+					biggerRect.X = x;
+					biggerRect.Y = y;
+					biggerRect.Width = 25;
+					biggerRect.Height = 25;
+					pen.Width = 2;
+					pen.Color = Color.Green;
+					g.DrawEllipse(pen, biggerRect);
+				}
+				if(state.getInitial() == true)
+				{
+					g.FillPolygon(pen.Brush, new Point[] { new Point(x-10, y+13), new Point(x-30, y), new Point(x-30, y+26)});
+				}
+			}
+			pen.Width = 2;
+			pen.Color = Color.Green;
+			pen.CustomEndCap = new AdjustableArrowCap(5, 5);
+			foreach (Transition t in fa.transitions)
+			{
+				State from = fa.getState(t.getFrom());
+				State to = fa.getState(t.getTo());
+				int fromX = from.getX() + 12;
+				int fromY = from.getY() + 12;
+				int toX = to.getX() + 12;
+				int toY = to.getY() + 12;
+				g.DrawLine(pen, new Point(fromX, fromY), new Point(toX, toY));
 			}
 		}
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }
-    }
+
+		private void testDFAInputToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (fa == null) { return; }
+
+			string promptValue = Prompt.ShowDialog("Please input a string you wish to parse.", "String Input");
+			string shrunk = String.Concat(promptValue.Where(c => !Char.IsWhiteSpace(c)));
+
+			int currentState = fa.states.FirstOrDefault(x => x.getInitial() == true).getId();
+
+			foreach(char c in shrunk)
+			{
+				IEnumerable<Transition> paths = fa.transitions.Where(x => x.getFrom() == currentState);
+				foreach(Transition t in paths)
+				{
+					if(t.getRead() == c.ToString())
+					{
+						currentState = t.getTo();
+						break;
+					}
+				}
+			}
+
+			if(fa.states.FirstOrDefault(x => x.getId() == currentState).getFinal() == true)
+			{
+				Prompt.ShowInfo("This string parses with the DFA!", "Success!");
+			}
+			else
+			{
+				Prompt.ShowInfo("We could not find a pathway.", "Failure.");
+			}
+
+
+		}
+	}
 }
