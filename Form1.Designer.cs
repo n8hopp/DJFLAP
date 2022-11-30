@@ -117,14 +117,14 @@ namespace DJFLAP
 			// testDFAInputToolStripMenuItem
 			// 
 			this.testDFAInputToolStripMenuItem.Name = "testDFAInputToolStripMenuItem";
-			this.testDFAInputToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.testDFAInputToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
 			this.testDFAInputToolStripMenuItem.Text = "Test String (Input)";
 			this.testDFAInputToolStripMenuItem.Click += new System.EventHandler(this.testDFAInputToolStripMenuItem_Click);
 			// 
 			// testDFAToolStripMenuItem
 			// 
 			this.testDFAToolStripMenuItem.Name = "testDFAToolStripMenuItem";
-			this.testDFAToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.testDFAToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
 			this.testDFAToolStripMenuItem.Text = "Test String (Textfile)";
 			this.testDFAToolStripMenuItem.Click += new System.EventHandler(this.testDFAToolStripMenuItem_Click);
 			// 
@@ -144,7 +144,10 @@ namespace DJFLAP
 			this.panel1.Size = new System.Drawing.Size(800, 422);
 			this.panel1.TabIndex = 2;
 			this.panel1.Click += new System.EventHandler(this.panel1_Click);
+			this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
 			this.panel1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseClick);
+			this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseDown);
+			this.panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseMove);
 			// 
 			// openFileDialog1
 			// 

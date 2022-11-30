@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,12 +9,13 @@ namespace DJFLAP
 {
 	class State
 	{
-		private bool isSelected;
+		public bool isSelected;
 		private bool isFinal;
 		private bool isInitial;
 		private string name;
 		private int id;
 		private int x, y;
+		public Rectangle boundingBox;
 		public State()
 		{
 			isSelected = false;
@@ -22,6 +24,7 @@ namespace DJFLAP
 			name = "";
 			id = -1;
 			x = y = 0;
+			boundingBox = new Rectangle();
 		}
 
 		public State(int id)
@@ -44,6 +47,10 @@ namespace DJFLAP
 			isSelected = false;
 		}
 
+		public void Draw()
+		{
+
+		}
 		public int getId()
 		{
 			return this.id;

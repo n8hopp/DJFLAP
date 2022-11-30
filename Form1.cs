@@ -12,6 +12,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Drawing.Drawing2D;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace DJFLAP
 {
@@ -22,16 +23,26 @@ namespace DJFLAP
 		int y = -1;
 		Pen pen;
 		FiniteAutomaton fa;
-		
+		Rectangle selectRect;
+		IEnumerable<Rectangle> stateRectList;
 		// When the form initializes, we define g (our graphics in our panel) and our pen.
 		public Form1()
 		{
 			InitializeComponent();
-			g = panel1.CreateGraphics();
-			g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 			pen = new Pen(Color.Black, 5);
 			pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+			fa = new FiniteAutomaton();
+			this.DoubleBuffered = true;
+			typeof(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty
+			| BindingFlags.Instance | BindingFlags.NonPublic, null,
+			panel1, new object[] { true });
 		}
+
+		protected override void OnPaint(PaintEventArgs e)
+		{
+			     
+		}
+
 
 		private void testDFAToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -47,23 +58,12 @@ namespace DJFLAP
 		{
 			
 		}
-		/* 
-			On panel click, draw a circle. This functionality is yet to be fully implemented, eventually
-			it will allow you to add states. Similar to JFLAP.
-		*/
+
 		private void panel1_MouseClick(object sender, MouseEventArgs e)
 		{
-			x = e.X; //Starting x and Y at mouse click pos
-			y = e.Y;
+			
 
-			// define the rectangle-shaped boundary of the drawn ellipse
-			Rectangle rect = new Rectangle();
-			rect.X = x;
-			rect.Y = y;
-			rect.Width = 5;
-			rect.Height = 5;
-			pen.Width = 5;
-			g.DrawEllipse(pen, rect);
+
 		}
 
 		/* When click the "Load DFA From File", read as XML, assigning all relevant fields to a Finite Automaton
@@ -141,7 +141,7 @@ namespace DJFLAP
 					Transition transition = new Transition(from, to, read);
 					fa.transitions.Add(transition);
 				}
-				drawStates(fa);
+				panel1.Invalidate();
 			}
 		}
 
@@ -151,6 +151,7 @@ namespace DJFLAP
 			// clear canvas so that existing drawings get wiped, set color back to default black
 			g.Clear(Color.White);
 			pen.Color = Color.Black;
+			stateRectList = Enumerable.Empty<Rectangle>();
 
 			// for each state
 			foreach(State state in fa.states)
@@ -166,6 +167,14 @@ namespace DJFLAP
 				rect.Width = 25;
 				rect.Height = 25;
 
+				if (rect.Contains(selectRect))
+				{
+					pen.Color = Color.Yellow;
+					state.isSelected = true;
+				}
+				else state.isSelected = false;
+
+				stateRectList.Append(rect); 
 				pen.Width = 25;
 				pen.Alignment = System.Drawing.Drawing2D.PenAlignment.Center;
 
@@ -260,8 +269,64 @@ namespace DJFLAP
 		}
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+			SaveFileDialog download = new SaveFileDialog();
+			download.Filter = "JFF File(*.jff) | *.jff";
+			download.Title = "Save a DFA";
+			download.ShowDialog();
 
-        }
+			if (download.FileName != "")
+			{
+				FileStream fs = (FileStream)download.OpenFile();
+				XmlWriterSettings settings = new XmlWriterSettings();
+				settings.Indent = true;
+				XmlWriter writer = XmlWriter.Create(fs, settings);
+
+				writer.WriteStartElement("structure");
+
+				writer.WriteStartElement("type");
+				writer.WriteString("fa");
+				writer.WriteEndElement();
+
+				writer.WriteStartElement("automaton");
+
+				foreach(var state in fa.states)
+				{
+					writer.WriteStartElement("state");
+					writer.WriteAttributeString("id", state.getId().ToString());
+					writer.WriteAttributeString("name", state.getName());
+
+					writer.WriteElementString("x", state.getX().ToString());
+					writer.WriteElementString("y", state.getY().ToString());
+
+					if(state.getFinal())
+					{
+						writer.WriteElementString("final", null);
+					}
+					if(state.getInitial())
+					{
+						writer.WriteElementString("initial", null);
+					}
+
+					writer.WriteEndElement();
+				}
+				foreach(var transition in fa.transitions)
+				{
+					writer.WriteStartElement("transition");
+
+					writer.WriteElementString("from", transition.getFrom().ToString());
+					writer.WriteElementString("to", transition.getTo().ToString());
+					writer.WriteElementString("read", transition.getRead());
+
+					writer.WriteEndElement();
+				}
+
+				writer.WriteEndDocument();
+
+				writer.Flush();
+				writer.Close();
+			}
+
+		}
 
 		private void testDFAInputToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -318,6 +383,40 @@ namespace DJFLAP
 			}
 
 			drawStates(fa);
+		}
+
+		private void panel1_MouseDown(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				selectRect = new Rectangle(e.X, e.Y, 0, 0);
+				panel1.Invalidate();
+			}
+		}
+
+		private void panel1_MouseMove(object sender, MouseEventArgs e)
+		{
+			if(e.Button == MouseButtons.Left)
+			{
+				selectRect = new Rectangle(e.X, e.Y, 0, 0);
+
+				State selected = fa.states.FirstOrDefault(x => x.isSelected == true);
+
+				if (selected != null)
+				{
+					selected.setCoordinates(e.X, e.Y);
+				}
+
+				panel1.Invalidate();
+			}
+		}
+
+		private void panel1_Paint(object sender, PaintEventArgs e)
+		{
+			g = e.Graphics;
+			g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+			drawStates(fa);
+			//Generates the shape       
 		}
 	}
 }
